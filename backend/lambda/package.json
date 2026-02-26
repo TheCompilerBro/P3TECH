@@ -1,0 +1,19 @@
+{
+  "name": "codepath-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda functions for CodePath - AI codebase learning assistant",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "deploy": "serverless deploy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "serverless": "^3.0.0"
+  }
+}
