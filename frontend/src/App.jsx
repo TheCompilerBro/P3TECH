@@ -33,6 +33,7 @@ function App() {
   }
 
   const handleGetStarted = () => {
+    setShowDocs(false)
     setActiveTab('upload')
     localStorage.setItem('p3_activeTab', 'upload')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -79,14 +80,22 @@ function App() {
                   New Analysis
                 </button>
               )}
-              <button className="btn btn-secondary" onClick={() => setShowDocs(true)}>
-                <Brain size={18} />
-                Documentation
-              </button>
-              <button className="btn btn-primary" onClick={handleGetStarted}>
-                <Sparkles size={18} />
-                Get Started
-              </button>
+              <div className="toggle-group">
+                <button
+                  className={`btn ${showDocs ? 'active' : ''}`}
+                  onClick={() => setShowDocs(true)}
+                >
+                  <Brain size={18} />
+                  Documentation
+                </button>
+                <button
+                  className={`btn ${!showDocs ? 'active' : ''}`}
+                  onClick={handleGetStarted}
+                >
+                  <Sparkles size={18} />
+                  Get Started
+                </button>
+              </div>
             </div>
           </div>
         </div>

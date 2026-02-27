@@ -208,6 +208,36 @@ code {
   transform: none !important;
 }
 
+/* Toggle Group */
+.toggle-group {
+  display: inline-flex;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 4px;
+  gap: 4px;
+}
+
+.toggle-group .btn {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: none;
+  box-shadow: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+}
+
+.toggle-group .btn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+.toggle-group .btn.active {
+  background: var(--color-accent-gradient);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
 /* Input Fields */
 .input {
   width: 100%;
