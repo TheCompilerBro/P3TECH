@@ -1,7 +1,5 @@
 .architecture-viewer {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .viewer-header {
@@ -30,28 +28,54 @@
     align-items: flex-start;
     justify-content: center;
     overflow: auto;
+    /* horizontal scroll if diagram is wide */
     margin-bottom: var(--spacing-2xl);
 }
 
-/* Zoom wrapper: fit-content ensures transform-origin is at diagram center */
+/* Zoom wrapper: do NOT force full width — let SVG size itself naturally */
 .diagram-zoom-wrapper {
-    width: 100%;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     transition: transform var(--transition-slow);
     transform-origin: top center;
 }
 
 .diagram-content {
-    width: 100%;
-    min-width: 400px;
+    /* Let the SVG determine its own width */
+    display: inline-block;
 }
 
 .diagram-content svg {
-    width: 100%;
-    height: auto;
     display: block;
     overflow: visible;
+}
+
+/* Ensure Mermaid SVG text nodes are never clipped */
+.diagram-content svg text,
+.diagram-content svg .label,
+.diagram-content svg .nodeLabel {
+    overflow: visible !important;
+    clip-path: none !important;
+}
+
+/* Fix box-sizing interference on Mermaid htmlLabel divs inside foreignObject */
+.diagram-content svg foreignObject {
+    overflow: visible !important;
+}
+
+.diagram-content svg foreignObject div,
+.diagram-content svg foreignObject span,
+.diagram-content svg .label-container,
+.diagram-content svg .label,
+.diagram-content svg .nodeLabel,
+.diagram-content svg .edgeLabel {
+    box-sizing: content-box !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .insights-section {
@@ -81,6 +105,15 @@
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: var(--color-bg-card);
+    border-left: 3px solid transparent;
+    border-image: var(--color-accent-gradient) 1;
+    transition: all var(--transition-base);
+}
+
+.insight-card:hover {
+    transform: translateX(4px);
+    border-left-color: var(--color-accent-primary);
+    border-image: none;
 }
 
 .insight-icon {
@@ -98,12 +131,60 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.stats-grid .stat-card {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.stats-visible .stat-card:nth-child(1) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0ms;
+}
+
+.stats-visible .stat-card:nth-child(2) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 80ms;
+}
+
+.stats-visible .stat-card:nth-child(3) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 160ms;
+}
+
+.stats-visible .stat-card:nth-child(4) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 240ms;
 }
 
 .stat-card {
     text-align: center;
     padding: var(--spacing-xl);
     background: var(--color-bg-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-accent-gradient);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    z-index: 0;
+}
+
+.stat-card:hover::before {
+    opacity: 0.06;
 }
 
 .stat-value {

@@ -327,18 +327,26 @@ function RepoUpload({ onAnalysisComplete }) {
     return (
         <div className="repo-upload">
             <div className="upload-hero">
-                <div className="hero-icon">
-                    <FileCode size={48} />
+                <div className="hero-icon" style={{ animation: 'float 3s ease-in-out infinite' }}>
+                    <FileCode size={52} />
                 </div>
-                <h2>Understand Any Codebase in Minutes</h2>
-                <p className="text-muted">
+                <h2 className="hero-headline">
+                    Understand Any Codebase
+                    <span className="hero-highlight"> in Minutes</span>
+                </h2>
+                <p className="text-muted hero-sub">
                     Upload a repository and let AI guide you through its architecture,
-                    patterns, and learning path.
+                    patterns, and a personalized learning path.
                 </p>
+                <div className="aws-badge-strip hero-aws-strip">
+                    <span className="aws-label">Powered by</span>
+                    {['☁️ AWS Bedrock', '⚡ Lambda', '🪣 S3', '🗄️ DynamoDB', '🌐 API Gateway'].map(s => (
+                        <span key={s} className="aws-badge-chip">{s}</span>
+                    ))}
+                </div>
             </div>
 
             <div className="card upload-card">
-                {/* Upload Method Selector */}
                 <div className="method-selector">
                     <button
                         className={`method-btn ${uploadMethod === 'github' ? 'active' : ''}`}
@@ -356,7 +364,6 @@ function RepoUpload({ onAnalysisComplete }) {
                     </button>
                 </div>
 
-                {/* GitHub URL Input */}
                 {uploadMethod === 'github' && (
                     <div className="input-group">
                         <input
@@ -387,7 +394,6 @@ function RepoUpload({ onAnalysisComplete }) {
                     </div>
                 )}
 
-                {/* File Upload */}
                 {uploadMethod === 'upload' && (
                     <div className="drop-zone" onClick={() => !isAnalyzing && fileInputRef.current?.click()}>
                         <Upload size={32} className="text-muted" />
@@ -406,49 +412,29 @@ function RepoUpload({ onAnalysisComplete }) {
                     </div>
                 )}
 
-                {/* Progress Indicator */}
                 {isAnalyzing && (
                     <div className="progress-section animate-fade-in">
                         <div className="progress-bar">
-                            <div
-                                className="progress-fill"
-                                style={{ width: `${progress}%` }}
-                            />
+                            <div className="progress-fill" style={{ width: `${progress}%` }} />
                         </div>
                         <p className="progress-text">{status}</p>
                     </div>
                 )}
 
-                {/* Example Repos */}
                 {!isAnalyzing && (
                     <div className="examples">
                         <p className="text-muted">Try these examples:</p>
                         <div className="example-buttons">
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => {
-                                    setRepoUrl('https://github.com/facebook/react')
-                                    setUploadMethod('github')
-                                }}
-                            >
+                            <button className="btn btn-secondary"
+                                onClick={() => { setRepoUrl('https://github.com/facebook/react'); setUploadMethod('github') }}>
                                 React
                             </button>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => {
-                                    setRepoUrl('https://github.com/expressjs/express')
-                                    setUploadMethod('github')
-                                }}
-                            >
+                            <button className="btn btn-secondary"
+                                onClick={() => { setRepoUrl('https://github.com/expressjs/express'); setUploadMethod('github') }}>
                                 Express.js
                             </button>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => {
-                                    setRepoUrl('https://github.com/vercel/next.js')
-                                    setUploadMethod('github')
-                                }}
-                            >
+                            <button className="btn btn-secondary"
+                                onClick={() => { setRepoUrl('https://github.com/vercel/next.js'); setUploadMethod('github') }}>
                                 Next.js
                             </button>
                         </div>
@@ -456,34 +442,26 @@ function RepoUpload({ onAnalysisComplete }) {
                 )}
             </div>
 
-            {/* Features */}
             <div className="features-grid">
                 <div className="feature-card card">
                     <div className="feature-icon">🎯</div>
                     <h4>Smart Analysis</h4>
-                    <p className="text-muted">
-                        AI-powered code analysis using AWS Bedrock to understand structure and patterns
-                    </p>
+                    <p className="text-muted">AI-powered code analysis using AWS Bedrock to understand structure and patterns</p>
                 </div>
                 <div className="feature-card card">
                     <div className="feature-icon">🗺️</div>
                     <h4>Visual Architecture</h4>
-                    <p className="text-muted">
-                        Auto-generated interactive diagrams showing component relationships
-                    </p>
+                    <p className="text-muted">Auto-generated interactive diagrams showing component relationships</p>
                 </div>
                 <div className="feature-card card">
                     <div className="feature-icon">🧭</div>
                     <h4>Guided Learning</h4>
-                    <p className="text-muted">
-                        Personalized paths to understand the codebase step-by-step
-                    </p>
+                    <p className="text-muted">Personalized paths to understand the codebase step-by-step</p>
                 </div>
             </div>
         </div>
     )
 }
-
 // Mock data generators for prototype
 function generateMockArchitecture() {
     return `graph TB

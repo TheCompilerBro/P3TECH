@@ -5,7 +5,7 @@ import ArchitectureViewer from './components/ArchitectureViewer'
 import CodeExplorer from './components/CodeExplorer'
 import AIChat from './components/AIChat'
 import LearningPath from './components/LearningPath'
-import { Code2, Brain, Sparkles } from 'lucide-react'
+import { Code2, Brain, Sparkles, RotateCcw } from 'lucide-react'
 
 function App() {
   const [analysisData, setAnalysisData] = useState(() => {
@@ -38,6 +38,15 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleReset = () => {
+    setAnalysisData(null)
+    setSelectedFilePath(null)
+    setActiveTab('upload')
+    localStorage.removeItem('p3_analysisData')
+    localStorage.setItem('p3_activeTab', 'upload')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleNavigateToFile = (tab, filePath) => {
     setActiveTab(tab)
     localStorage.setItem('p3_activeTab', tab)
@@ -55,10 +64,21 @@ function App() {
               <Code2 size={36} className="logo-icon" />
               <div>
                 <h1 className="logo-text">P3 Tech</h1>
-                <p className="logo-subtitle">AI-Powered Codebase Learning</p>
+                <p className="logo-subtitle">
+                  {analysisData
+                    ? <>Analyzing: <span className="repo-name-badge">{analysisData.repoName}</span></>
+                    : 'AI-Powered Codebase Learning'
+                  }
+                </p>
               </div>
             </div>
             <div className="header-actions">
+              {analysisData && (
+                <button className="btn btn-reset" onClick={handleReset} title="Start a new analysis">
+                  <RotateCcw size={18} />
+                  New Analysis
+                </button>
+              )}
               <button className="btn btn-secondary" onClick={() => setShowDocs(true)}>
                 <Brain size={18} />
                 Documentation

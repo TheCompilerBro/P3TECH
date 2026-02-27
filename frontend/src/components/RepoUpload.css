@@ -1,6 +1,11 @@
 .repo-upload {
-    max-width: 800px;
+    max-width: 960px;
     margin: 0 auto;
+}
+
+/* Center column */
+.upload-center {
+    min-width: 0;
 }
 
 .upload-hero {
@@ -15,11 +20,39 @@
     border-radius: var(--radius-xl);
     margin-bottom: var(--spacing-lg);
     box-shadow: var(--shadow-glow);
-    animation: pulse 3s ease-in-out infinite;
 }
 
 .hero-icon svg {
     color: white;
+}
+
+/* Animated gradient headline */
+.hero-headline {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-primary);
+}
+
+.hero-highlight {
+    background: var(--color-accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-sub {
+    max-width: 520px;
+    margin: 0 auto var(--spacing-xl);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+/* AWS Badge Strip inside hero (override margin) */
+.hero-aws-strip {
+    max-width: 680px;
+    margin: 0 auto var(--spacing-xl);
 }
 
 .upload-card {
@@ -105,8 +138,20 @@
 .progress-fill {
     height: 100%;
     background: var(--color-accent-gradient);
+    background-size: 200% 100%;
     transition: width var(--transition-slow);
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    animation: shimmerProgress 1.5s ease infinite;
+}
+
+@keyframes shimmerProgress {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
 }
 
 .progress-text {
@@ -138,6 +183,17 @@
 .feature-card {
     text-align: center;
     padding: var(--spacing-xl);
+    position: relative;
+    transition: all var(--transition-base);
+    border: 1px solid var(--color-border);
+}
+
+.feature-card:hover {
+    border-color: transparent;
+    background: linear-gradient(var(--color-bg-card), var(--color-bg-card)) padding-box,
+        var(--color-accent-gradient) border-box;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
 .feature-icon {

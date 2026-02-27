@@ -1,89 +1,91 @@
 import { useEffect, useRef, useState } from 'react'
 import mermaid from 'mermaid'
-import { ZoomIn, ZoomOut, Maximize2, Info } from 'lucide-react'
+import { ZoomIn, ZoomOut, Maximize2, Info, Copy, CheckCheck } from 'lucide-react'
 import './ArchitectureViewer.css'
-
-// Initialize mermaid
-mermaid.initialize({
-    startOnLoad: false,
-    theme: 'dark',
-    securityLevel: 'loose',
-    flowchart: {
-        useMaxWidth: true,
-        htmlLabels: false,
-        curve: 'basis',
-    },
-    themeVariables: {
-        primaryColor: '#6366f1',
-        primaryTextColor: '#f9fafb',
-        primaryBorderColor: '#8b5cf6',
-        lineColor: '#6366f1',
-        secondaryColor: '#1f2937',
-        tertiaryColor: '#111827',
-        fontSize: '16px',
-    },
-})
 
 function ArchitectureViewer({ data }) {
     const diagramRef = useRef(null)
     const [zoom, setZoom] = useState(1)
     const [selectedNode, setSelectedNode] = useState(null)
+    const [copied, setCopied] = useState(false)
+    const [statsVisible, setStatsVisible] = useState(false)
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(data?.architecture || '').then(() => {
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        })
+    }
 
     useEffect(() => {
-        if (diagramRef.current && data?.architecture) {
-            // Clear previous content
-            diagramRef.current.innerHTML = ''
+        if (!diagramRef.current || !data?.architecture) return
+        diagramRef.current.innerHTML = ''
 
-            // Render mermaid diagram
-            const renderDiagram = async () => {
-                try {
-                    // Reset mermaid to prevent ID conflicts
-                    mermaid.contentLoaded()
+        const renderDiagram = async () => {
+            try {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'dark',
+                    securityLevel: 'loose',
+                    flowchart: {
+                        htmlLabels: true,    // HTML labels so nodes auto-size to text
+                        curve: 'basis',
+                        nodeSpacing: 60,
+                        rankSpacing: 70,
+                        padding: 20,
+                    },
+                    themeVariables: {
+                        primaryColor: '#6366f1',
+                        primaryTextColor: '#f9fafb',
+                        primaryBorderColor: '#8b5cf6',
+                        lineColor: '#6366f1',
+                        secondaryColor: '#1f2937',
+                        tertiaryColor: '#111827',
+                        fontFamily: 'Inter, -apple-system, sans-serif',
+                        fontSize: '14px',
+                    },
+                })
 
-                    const uniqueId = `architecture-diagram-${Date.now()}`
-                    const { svg } = await mermaid.render(uniqueId, data.architecture)
+                const uniqueId = `mermaid-${Date.now()}`
+                const { svg } = await mermaid.render(uniqueId, data.architecture)
 
-                    if (diagramRef.current) {
-                        diagramRef.current.innerHTML = svg
-
-                        // Fix SVG sizing — let it display at natural width
-                        const svgEl = diagramRef.current.querySelector('svg')
-                        if (svgEl) {
-                            // Remove hardcoded width so SVG fills its container
-                            svgEl.removeAttribute('width')
-                            svgEl.removeAttribute('height')
-                            svgEl.style.width = '100%'
-                            svgEl.style.height = 'auto'
-                            svgEl.style.display = 'block'
-                            svgEl.style.overflow = 'visible'
-                        }
-
-                        // Add click handlers to nodes
-                        const nodes = diagramRef.current.querySelectorAll('.node')
-                        nodes.forEach((node, index) => {
-                            node.style.cursor = 'pointer'
-                            node.addEventListener('click', () => {
-                                setSelectedNode({
-                                    name: node.textContent?.trim(),
-                                    index: index,
-                                    description: getNodeDescription(node.textContent?.trim())
-                                })
+                if (diagramRef.current) {
+                    diagramRef.current.innerHTML = svg
+                    const svgEl = diagramRef.current.querySelector('svg')
+                    if (svgEl) {
+                        // Render SVG at full natural size — never scale it down.
+                        // The .diagram-container handles scrolling if the diagram is wide.
+                        svgEl.removeAttribute('width')
+                        svgEl.removeAttribute('height')
+                        svgEl.style.minWidth = '500px'
+                        svgEl.style.display = 'block'
+                        svgEl.style.overflow = 'visible'
+                    }
+                    const nodes = diagramRef.current.querySelectorAll('.node')
+                    nodes.forEach((node, index) => {
+                        node.style.cursor = 'pointer'
+                        node.addEventListener('click', () => {
+                            setSelectedNode({
+                                name: node.textContent?.trim(),
+                                index,
+                                description: getNodeDescription(node.textContent?.trim())
                             })
                         })
-                    }
-
-                } catch (error) {
-                    console.error('Error rendering diagram:', error)
-                    if (diagramRef.current) {
-                        diagramRef.current.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 3rem;">
-              <p>Unable to render architecture diagram</p>
-              <p style="font-size: 0.875rem; margin-top: 0.5rem;">Error: ${error.message}</p>
-            </div>`
-                    }
+                    })
+                }
+            } catch (error) {
+                console.error('Error rendering diagram:', error)
+                if (diagramRef.current) {
+                    diagramRef.current.innerHTML = `<div style="color:#9ca3af;text-align:center;padding:3rem">
+                      <p>Unable to render architecture diagram</p>
+                      <p style="font-size:0.875rem;margin-top:0.5rem">Error: ${error.message}</p>
+                    </div>`
                 }
             }
-            renderDiagram()
         }
+
+        renderDiagram()
+        setTimeout(() => setStatsVisible(true), 400)
     }, [data])
 
     const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.2, 2))
@@ -100,6 +102,10 @@ function ArchitectureViewer({ data }) {
                     </p>
                 </div>
                 <div className="viewer-controls">
+                    <button className="btn btn-secondary" onClick={handleCopy} title="Copy Mermaid source">
+                        {copied ? <CheckCheck size={18} /> : <Copy size={18} />}
+                        {copied ? 'Copied!' : 'Copy'}
+                    </button>
                     <button className="btn btn-secondary" onClick={handleZoomOut} title="Zoom Out">
                         <ZoomOut size={18} />
                     </button>
@@ -113,7 +119,6 @@ function ArchitectureViewer({ data }) {
             </div>
 
             <div className="diagram-container card">
-                {/* Zoom wrapper: fit-content keeps transform-origin centered on diagram */}
                 <div className="diagram-zoom-wrapper" style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}>
                     <div ref={diagramRef} className="diagram-content" />
                 </div>
@@ -136,8 +141,16 @@ function ArchitectureViewer({ data }) {
                 </div>
             </div>
 
-            {/* Component Details */}
-            <div className="stats-grid">
+            {/* AWS Tech Stack Badge Strip */}
+            <div className="aws-badge-strip">
+                <span className="aws-label">Powered by</span>
+                {['☁️ AWS Bedrock', '⚡ Lambda', '🪣 S3', '🗄️ DynamoDB', '🌐 API Gateway', '🚀 CloudFront'].map(s => (
+                    <span key={s} className="aws-badge-chip">{s}</span>
+                ))}
+            </div>
+
+            {/* Stats */}
+            <div className={`stats-grid ${statsVisible ? 'stats-visible' : ''}`}>
                 <div className="stat-card card">
                     <div className="stat-value">{data?.structure?.files || 0}</div>
                     <div className="stat-label">Files</div>
@@ -156,7 +169,7 @@ function ArchitectureViewer({ data }) {
                 </div>
             </div>
 
-            {/* Selected Node Detail Modal */}
+            {/* Node Detail Modal */}
             {selectedNode && (
                 <div className="modal-overlay" onClick={() => setSelectedNode(null)}>
                     <div className="modal-content card" onClick={(e) => e.stopPropagation()}>
@@ -172,7 +185,6 @@ function ArchitectureViewer({ data }) {
     )
 }
 
-// Helper function for node descriptions
 function getNodeDescription(nodeName) {
     const descriptions = {
         'User Interface': 'The presentation layer where users interact with the application',

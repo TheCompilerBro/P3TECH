@@ -8,20 +8,35 @@
   overflow-x: hidden;
 }
 
-/* Animated Background */
+/* ── Multi-orb animated background mesh ── */
 .app::before {
   content: '';
   position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at 50% 50%,
-      rgba(99, 102, 241, 0.1) 0%,
-      transparent 50%);
-  animation: rotate 30s linear infinite;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(139, 92, 246, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 60% 10%, rgba(236, 72, 153, 0.07) 0%, transparent 50%);
+  animation: meshShift 18s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
+}
+
+@keyframes meshShift {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0) translateY(0);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translateX(-2%) translateY(1%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(1%) translateY(-1%);
+  }
 }
 
 @keyframes rotate {
@@ -31,6 +46,30 @@
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -61,7 +100,7 @@
 }
 
 .logo-text {
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-family: 'Codec Pro', 'Nunito', 'Inter', sans-serif;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -73,7 +112,7 @@
 }
 
 .logo-subtitle {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -81,12 +120,91 @@
 .header-actions {
   display: flex;
   gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* Reset / New Analysis button */
+.btn-reset {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-reset:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Repo name badge in subtitle */
+.repo-name-badge {
+  display: inline-block;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* AWS Tech Badge Strip */
+.aws-badge-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+}
+
+.aws-badge-strip .aws-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-right: var(--spacing-sm);
+}
+
+.aws-badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.aws-badge-chip:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
 /* Main Content */
 .main-content {
   flex: 1;
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-xl) 0;
   position: relative;
   z-index: 1;
 }
@@ -130,7 +248,7 @@
 
 /* Tab Content */
 .tab-content {
-  min-height: 500px;
+  min-height: 600px;
 }
 
 /* Footer */

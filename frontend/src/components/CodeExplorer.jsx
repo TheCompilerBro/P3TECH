@@ -279,7 +279,7 @@ function UserProfile() {
 
 export default UserProfile;`
     }
-    return mockCode[file?.name] || `// ${file?.name}\n// This file contains application code\n\nfunction example() {\n  console.log('Code content');\n}\n\nexport default example;`
+    return mockCode[file?.name] || `// ${file?.name}\n// File content is available after repository analysis.\n\nexport default {};`
   }
 
   // Build hierarchical folder structure from flat file list
