@@ -5,7 +5,7 @@ import ArchitectureViewer from './components/ArchitectureViewer'
 import CodeExplorer from './components/CodeExplorer'
 import AIChat from './components/AIChat'
 import LearningPath from './components/LearningPath'
-import { Code2, Brain, Sparkles, RotateCcw } from 'lucide-react'
+import { Code2, Brain, Sparkles, RotateCcw, Menu, X } from 'lucide-react'
 
 function App() {
   const [analysisData, setAnalysisData] = useState(() => {
@@ -18,6 +18,7 @@ function App() {
     return localStorage.getItem('p3_activeTab') || 'upload'
   })
   const [showDocs, setShowDocs] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [selectedFilePath, setSelectedFilePath] = useState(null)
 
   const handleAnalysisComplete = (data) => {
@@ -34,6 +35,7 @@ function App() {
 
   const handleGetStarted = () => {
     setShowDocs(false)
+    setShowMobileMenu(false)
     setActiveTab('upload')
     localStorage.setItem('p3_activeTab', 'upload')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -80,21 +82,36 @@ function App() {
                   New Analysis
                 </button>
               )}
-              <div className="toggle-group">
+              <div className="menu-container">
                 <button
-                  className={`btn ${showDocs ? 'active' : ''}`}
-                  onClick={() => setShowDocs(true)}
+                  className="btn btn-secondary btn-icon"
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  aria-label="Menu"
                 >
-                  <Brain size={18} />
-                  Documentation
+                  {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
                 </button>
-                <button
-                  className={`btn ${!showDocs ? 'active' : ''}`}
-                  onClick={handleGetStarted}
-                >
-                  <Sparkles size={18} />
-                  Get Started
-                </button>
+
+                {showMobileMenu && (
+                  <div className="dropdown-menu animate-fade-in">
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        setShowDocs(true);
+                        setShowMobileMenu(false);
+                      }}
+                    >
+                      <Brain size={18} />
+                      Documentation
+                    </button>
+                    <button
+                      className="dropdown-item primary"
+                      onClick={handleGetStarted}
+                    >
+                      <Sparkles size={18} />
+                      Get Started
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
